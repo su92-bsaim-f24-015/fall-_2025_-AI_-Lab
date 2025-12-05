@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voltage Prediction</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        /**********************************
+               GLOBAL THEME STYLES
+        **********************************/
+
+        /* Light Mode */
+        body.light-mode {
+            background: linear-gradient(to right, #dfe9f3, #ffffff);
+            color: #222;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /**********************************
+                    NAV BAR
+        **********************************/
+        .navbar {
+            width: 100%;
+            height: 60px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-sizing: border-box;
+        }
+
+        .nav-title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Theme Toggle Button */
+        .toggle-btn {
+            padding: 10px 18px;
+            background: linear-gradient(to right, #536976, #292E49);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.06);
+            background: linear-gradient(to right, #485563, #29323c);
+        }
+
+        /**********************************
+                     CARD UI
+        **********************************/
+       /**********************************
+             CARD UI
+**********************************/
+.card {
+    background: rgba(167, 194, 216, 0.85); /* black in light mode */
+    color: #ffffff; /* text white in light mode */
+    padding: 32px;
+    width: 450px;
+    margin: 40px auto;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+    transition: 0.3s;
+    animation: fadeInUp 0.8s ease;
+}
+
+body.dark-mode .card {
+    background: rgba(255,255,255,0.85); /* white in dark mode */
+    color: #000000; /* text black in dark mode */
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
+}
+
+        @keyframes fadeInUp {
+            from { transform: translateY(25px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 26px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /**********************************
+                   INPUT FIELDS
+        **********************************/
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #aaa;
+            border-radius: 8px;
+            font-size: 15px;
+            background: rgba(255,255,255,0.8);
+            transition: 0.3s;
+        }
+
+        body.dark-mode input {
+            background: rgba(0,0,0,0.45);
+            color: #ffffff;
+            border: 1.5px solid #666;
+        }
+
+        input:focus {
+            transform: scale(1.02);
+            border-color: #0072ff;
+            outline: none;
+        }
+
+        /**********************************
+                     BUTTON
+        **********************************/
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,114,255,0.4);
+        }
+
+        /**********************************
+                    RESULT BOX
+        **********************************/
+        .result-box {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            color: #0072ff;
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid #0072ff50;
+        }
+
+        body.dark-mode .result-box {
+            color: #4fc3f7;
+            background: rgba(0,0,0,0.45);
+            border: 1px solid #4fc3f750;
+        }
+
+    </style>
+</head>
+
+<body class="light-mode">
+
+    <!-- NAVIGATION BAR -->
+    <div class="navbar">
+        <div class="nav-title">⚡ Electricity Prediction</div>
+
+        <button class="toggle-btn" onclick="toggleMode()">
+            🌙 Dark / ☀ Light
+        </button>
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="card">
+        <h2>Voltage Prediction</h2>
+
+        <form method="POST">
+            <label>Global Active Power</label>
+            <input type="number" step="0.01" name="Global_active_power" required>
+
+            <label>Global Reactive Power</label>
+            <input type="number" step="0.01" name="Global_reactive_power" required>
+
+            <label>Global Intensity</label>
+            <input type="number" step="0.01" name="Global_intensity" required>
+
+            <label>Sub Metering 1</label>
+            <input type="number" step="0.01" name="Sub_metering_1" required>
+
+            <label>Sub Metering 2</label>
+            <input type="number" step="0.01" name="Sub_metering_2" required>
+
+            <label>Sub Metering 3</label>
+            <input type="number" step="0.01" name="Sub_metering_3" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result-box">
+            Predicted Voltage:
+            <br><span style="font-size:30px;">{{ prediction }}</span>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-----------------------------
+        JAVASCRIPT FOR THEME
+    ------------------------------->
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle("dark-mode");
+            document.body.classList.toggle("light-mode");
+        }
+    </script>
+
+</body>
+</html>
